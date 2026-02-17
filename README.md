@@ -209,6 +209,65 @@ clin-intel-knowledge-graph_eks/
 
 ---
 
+## Standard Overlay Pattern
+
+**✅ ONLY create these three permanent overlays:**
+
+- **`dev/`** - Development environment (low resource limits, internal ingress)
+- **`stg/`** - Staging/pre-production environment (production-like, testing)
+- **`live/`** - Production environment (full resources, high availability)
+
+**❌ DO NOT create additional permanent overlays:**
+
+- ❌ `pr/` - Use PR preview ApplicationSet instead (see PR Preview section)
+- ❌ `uat/`, `qa/`, `test/` - Use `stg/` for all pre-production testing
+- ❌ `sandbox/`, `demo/` - Deploy as separate service if needed
+- ❌ `prod/`, `production/` - Use `live/` (BMJ standard naming)
+
+**Why only three?**
+- Additional overlays create maintenance burden
+- More overlays = more configuration drift
+- Increases complexity and cognitive load
+- Harder to ensure consistency across environments
+
+**Environment progression:**
+```
+dev → stg → live
+ ↓      ↓      ↓
+Fast   Test   Stable
+```
+
+### PR Preview Environments (Ephemeral)
+
+**For temporary PR preview environments, DO NOT create a permanent overlay.**
+
+✅ **Correct approach:**
+- Use `dev` overlay as base
+- Apply dynamic overrides via ApplicationSet
+- Ephemeral (created/destroyed with PRs)
+- No permanent directory structure
+
+❌ **Wrong approach:**
+- Creating `overlays/pr/` directory
+- Maintaining permanent PR configuration
+- Treating PRs as permanent environment
+
+**Example PR preview ApplicationSet:**
+```yaml
+# Uses dev overlay + dynamic overrides
+path: {{service}}/overlays/dev
+kustomize:
+  namePrefix: pr-{{number}}-
+  commonLabels:
+    pr-number: "{{number}}"
+  images:
+    - registry/{{service}}:pr_{{branch}}_{{sha}}
+```
+
+See [applicationset-example.yaml](applicationset-example.yaml) for complete PR preview pattern.
+
+---
+
 ## Naming Convention
 
 - **Repository name**: `{product-name}_eks` (e.g., `clin-intel-knowledge-graph_eks`, `journals_eks`)

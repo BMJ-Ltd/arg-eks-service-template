@@ -332,6 +332,8 @@ This is **normal and expected**. Templates with `{{PLACEHOLDERS}}` cannot be bui
 
 5. **Matrix Pattern Scales Better**: Matrix ApplicationSet > Per-service ApplicationSet for repos with multiple services.
 
+6. **Standard Overlay Pattern Only**: Only create three permanent overlays (dev/stg/live). PR previews and other temporary environments should be ephemeral, not permanent overlays.
+
 ### For Template Users:
 
 1. **Start with V2 Example**: Look at gha-java-app_eks-v2 to see what the template looks like filled in.
@@ -343,6 +345,8 @@ This is **normal and expected**. Templates with `{{PLACEHOLDERS}}` cannot be bui
 4. **Matrix ApplicationSet Preferred**: Use applicationset-example.yaml pattern for multi-service repos.
 
 5. **Infrastructure Can Wait**: You can commit the repo with placeholder values (ACCOUNT_ID, CERT_ID) and fill them in later when available.
+
+6. **Only Three Overlays**: Create only dev/stg/live permanent overlays. Use ApplicationSet dynamic overrides for PR previews and other temporary environments.
 
 ---
 

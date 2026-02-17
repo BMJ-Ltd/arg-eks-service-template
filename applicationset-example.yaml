@@ -117,8 +117,22 @@ spec:
 ---
 # Optional: PR Preview ApplicationSet
 # 
-# Separate ApplicationSet for ephemeral PR preview environments
-# Uncomment and customize if you want PR preview deployments
+# IMPORTANT: PR previews are EPHEMERAL - do NOT create a permanent overlays/pr/ directory!
+# This ApplicationSet uses the dev overlay as base and applies dynamic overrides.
+#
+# How it works:
+# 1. Monitors PRs with "preview" label
+# 2. Uses dev overlay as base (no separate pr overlay needed)
+# 3. Applies namePrefix, labels, and image tags dynamically
+# 4. Creates temporary namespace per PR
+# 5. Automatically deleted when PR closes
+#
+# Prerequisites:
+# - GitHub App credentials configured in ArgoCD (appSecretName)
+# - PR must have "preview" label
+# - Image tagged with PR pattern: pr_{{branch}}_{{sha}}
+#
+# Uncomment and customize if you want PR preview deployments:
 #
 # apiVersion: argoproj.io/v1alpha1
 # kind: ApplicationSet
@@ -142,10 +156,12 @@ spec:
 #       source:
 #         repoURL: "https://github.com/BMJ-Ltd/{{REPOSITORY_NAME}}.git"
 #         targetRevision: HEAD
-#         path: {{SERVICE_NAME}}/overlays/dev  # Use dev overlay as base
+#         path: {{SERVICE_NAME}}/overlays/dev  # ✅ Use dev overlay, not separate pr overlay
 #         kustomize:
+#           namePrefix: pr-{{number}}-          # ✅ Dynamic prefix per PR
 #           commonLabels:
 #             pr-number: "{{number}}"
+#             environment: pr-preview
 #           images:
 #             - {{AWS_ACCOUNT_ID_DEV}}.dkr.ecr.eu-west-1.amazonaws.com/{{SERVICE_NAME}}:pr_{{branch}}_{{head_short_sha_7}}
 #           commonAnnotations:
