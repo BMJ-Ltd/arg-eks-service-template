@@ -1,0 +1,12 @@
+- source:
+    kind: ConfigMap
+    name: ingress-certificate
+    fieldPath: data.certificateArn
+  targets:
+    - select:
+        kind: Ingress
+        name: {{SERVICE_NAME}}
+      fieldPaths:
+        - metadata.annotations.[alb.ingress.kubernetes.io/certificate-arn]
+      options:
+        delimiter: ""

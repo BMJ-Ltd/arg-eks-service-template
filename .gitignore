@@ -1,0 +1,50 @@
+# .gitignore for EKS Service Template
+
+# Secrets (NEVER commit these)
+secret.yaml
+secrets.yaml
+*-secret.yaml
+!sealed-secrets.yaml
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+!*.example.*
+
+# Kubeseal working files
+.sealed-secrets/
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+!terraform.tfvars.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.log
+
+# Build outputs
+dist/
+build/
+target/
+
+# Local configuration
+.env
+.env.local
+local-config.yaml

@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{SERVICE_NAME}}
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    # Certificate ARN - set via replacement in overlay
+    # alb.ingress.kubernetes.io/certificate-arn: {{CERTIFICATE_ARN}}
+spec:
+  ingressClassName: alb
+  rules:
+    - host: {{SERVICE_NAME}}.{{ENVIRONMENT}}.eks.bmjgroup.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{SERVICE_NAME}}
+                port:
+                  number: 80

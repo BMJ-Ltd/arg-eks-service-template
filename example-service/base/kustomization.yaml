@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  app.kubernetes.io/name: {{SERVICE_NAME}}
+  app: {{SERVICE_NAME}}
+  team: {{TEAM_NAME}}
+  costcentre: {{PRODUCT_NAME}}
+  project: {{SERVICE_NAME}}
+  product: {{PRODUCT_NAME}}
+  app.kubernetes.io/managed-by: kustomize
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - serviceaccount.yaml
+  - ingress.yaml
+  # Optional resources (uncomment as needed):
+  # - pvc.yaml
+  # - instrumentation.yaml
+  # - argocd.yaml
