@@ -2,12 +2,12 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 commonLabels:
-  app.kubernetes.io/name: {{SERVICE_NAME}}
-  app: {{SERVICE_NAME}}
-  team: {{TEAM_NAME}}
-  costcentre: {{PRODUCT_NAME}}
-  project: {{SERVICE_NAME}}
-  product: {{PRODUCT_NAME}}
+  app.kubernetes.io/name: "REPLACE_WITH_SERVICE_NAME"
+  app: "REPLACE_WITH_SERVICE_NAME"
+  team: "REPLACE_WITH_TEAM_NAME"
+  costcentre: "REPLACE_WITH_PRODUCT_NAME"
+  project: "REPLACE_WITH_SERVICE_NAME"
+  product: "REPLACE_WITH_PRODUCT_NAME"
   app.kubernetes.io/managed-by: kustomize
 
 resources:

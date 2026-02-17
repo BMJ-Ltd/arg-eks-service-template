@@ -1,0 +1,162 @@
+# Matrix ApplicationSet Pattern - Multi-Service Deployment
+#
+# This ApplicationSet example shows how to deploy ALL services across ALL environments
+# from a SINGLE file using the matrix generator pattern.
+#
+# Benefits:
+# - One file deploys everything
+# - Easy to add new services (just add to the list)
+# - Easy to add new environments (just add to the list)
+# - Consistent deployment patterns
+# - Clear visibility of all deployments
+#
+# Usage:
+# 1. Copy this file to your repository root as `applicationset.yaml`
+# 2. Replace {{PRODUCT_NAME}} with your product name
+# 3. Replace {{REPOSITORY_NAME}} with your GitHub repository name
+# 4. Update service list with your actual services
+# 5. Update environment list with your AWS accounts/clusters
+# 6. Apply to ArgoCD: `kubectl apply -f applicationset.yaml`
+#
+# Prerequisites:
+# - Each service must follow base/overlays/{dev,stg,live} structure
+# - ArgoCD installed in target clusters
+# - Appropriate AWS credentials configured
+#
+# Adding a new service:
+# - Add one line to the 'services' list below
+# - Ensure service directory structure exists
+# - Push to GitHub - ArgoCD will auto-deploy!
+#
+# Adding a new environment:
+# - Add one element to the 'environments' list below
+# - Ensure overlays exist for that environment in each service
+# - Apply this file to ArgoCD
+
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: {{PRODUCT_NAME}}
+  namespace: argocd
+spec:
+  generators:
+    - matrix:
+        generators:
+          # List of services in this product
+          # ADD NEW SERVICES HERE
+          - list:
+              elements:
+                - service: {{SERVICE_NAME}}-api
+                  port: 8080
+                  ingress: internal
+                - service: {{SERVICE_NAME}}-web
+                  port: 3000
+                  ingress: public
+                # Add more services as needed:
+                # - service: {{SERVICE_NAME}}-worker
+                #   port: 8080
+                #   ingress: internal
+          
+          # List of environments
+          - list:
+              elements:
+                - env: dev
+                  cluster: eks-cluster-dev-euw1
+                  account: "{{AWS_ACCOUNT_ID_DEV}}"
+                  region: eu-west-1
+                - env: stg
+                  cluster: eks-cluster-stg-euw1
+                  account: "{{AWS_ACCOUNT_ID_STG}}"
+                  region: eu-west-1
+                - env: live
+                  cluster: eks-cluster-live-euw1
+                  account: "{{AWS_ACCOUNT_ID_LIVE}}"
+                  region: eu-west-1
+                # Add more environments as needed:
+                # - env: uat
+                #   cluster: eks-cluster-uat-euw1
+                #   account: "{{AWS_ACCOUNT_ID_UAT}}"
+                #   region: eu-west-1
+  
+  template:
+    metadata:
+      name: '{{PRODUCT_NAME}}-{{service}}-{{env}}'
+      labels:
+        product: {{PRODUCT_NAME}}
+        team: {{TEAM_NAME}}
+        service: '{{service}}'
+        environment: '{{env}}'
+        costcentre: {{PRODUCT_NAME}}
+        ingress: '{{ingress}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/BMJ-Ltd/{{REPOSITORY_NAME}}.git
+        targetRevision: main
+        path: '{{service}}/overlays/{{env}}'
+        kustomize:
+          images:
+            # ArgoCD will use image tags from overlay kustomization.yaml
+            - '{{account}}.dkr.ecr.{{region}}.amazonaws.com/{{service}}'
+      destination:
+        name: '{{cluster}}'
+        namespace: default
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=false
+          - PruneLast=true
+      ignoreDifferences:
+        - group: apps
+          kind: Deployment
+          jsonPointers:
+            - /spec/replicas  # Allow manual scaling without sync conflicts
+
+---
+# Optional: PR Preview ApplicationSet
+# 
+# Separate ApplicationSet for ephemeral PR preview environments
+# Uncomment and customize if you want PR preview deployments
+#
+# apiVersion: argoproj.io/v1alpha1
+# kind: ApplicationSet
+# metadata:
+#   name: {{PRODUCT_NAME}}-preview
+#   namespace: argocd
+# spec:
+#   generators:
+#     - pullRequest:
+#         github:
+#           owner: BMJ-Ltd
+#           repo: {{REPOSITORY_NAME}}
+#           appSecretName: creds-2590638493  # GitHub App credentials in ArgoCD
+#           labels:
+#             - preview
+#         requeueAfterSeconds: 180
+#   template:
+#     metadata:
+#       name: "{{PRODUCT_NAME}}-{{branch}}-{{number}}"
+#     spec:
+#       source:
+#         repoURL: "https://github.com/BMJ-Ltd/{{REPOSITORY_NAME}}.git"
+#         targetRevision: HEAD
+#         path: {{SERVICE_NAME}}/overlays/dev  # Use dev overlay as base
+#         kustomize:
+#           commonLabels:
+#             pr-number: "{{number}}"
+#           images:
+#             - {{AWS_ACCOUNT_ID_DEV}}.dkr.ecr.eu-west-1.amazonaws.com/{{SERVICE_NAME}}:pr_{{branch}}_{{head_short_sha_7}}
+#           commonAnnotations:
+#             external-dns.alpha.kubernetes.io/hostname: {{SERVICE_NAME}}-{{branch}}-{{number}}.{{PRODUCT_NAME}}.dev.eks.bmjgroup.com
+#       project: "default"
+#       syncPolicy:
+#         automated:
+#           prune: true
+#           selfHeal: true
+#         syncOptions:
+#           - CreateNamespace=true
+#       destination:
+#         server: https://kubernetes.default.svc
+#         namespace: {{PRODUCT_NAME}}-{{branch}}-{{number}}

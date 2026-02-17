@@ -31,9 +31,11 @@ spec:
             - containerPort: {{SERVICE_PORT}}
               name: http
               protocol: TCP
-          envFrom:
-            - secretRef:
-                name: {{SERVICE_NAME}}-secrets
+          # Optional: Uncomment if using sealed secrets
+          # envFrom:
+          #   - secretRef:
+          #       name: {{SERVICE_NAME}}-secrets
+          #       optional: true
           # Add explicit environment variables here:
           env:
             - name: ENVIRONMENT

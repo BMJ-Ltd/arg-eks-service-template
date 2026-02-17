@@ -60,6 +60,35 @@ But all share the same:
 
 ---
 
+## ⚠️ Important: Template vs Instance
+
+**This template repository will NOT build with Kustomize until customized.**
+
+**Why?**
+- Contains placeholders like `{{SERVICE_NAME}}`, `{{PRODUCT_NAME}}`, etc.
+- Kustomize expects actual values, not placeholders
+- Running `kustomize build` will fail with "invalid Kustomization" error
+
+**This is expected and normal behavior for a template repository.**
+
+**Before building:**
+1. Replace **all placeholders** with actual values
+2. Use `./verify-configuration.sh` to find unreplaced placeholders
+3. See `gha-java-app_eks-v2` repository for working reference implementation
+
+**What placeholders need replacing:**
+- `{{SERVICE_NAME}}` - Your service name (e.g., `knowledge-graph-api`)
+- `{{PRODUCT_NAME}}` - Your product name (e.g., `clinical-intelligence`)
+- `{{TEAM_NAME}}` - Your team name (e.g., `platform`)
+- `{{AWS_ACCOUNT_ID}}` - AWS account ID per environment
+- `{{AWS_REGION}}` - AWS region (e.g., `eu-west-1`)
+- `{{ENVIRONMENT}}` - Environment (dev/stg/live)
+- And others - see CONFIGURATION_CHECKLIST.md
+
+**Reference Implementation**: See `/home/bmohamoodally/workspace/gha-java/gha-java-app_eks-v2` for what this template looks like when properly customized with real values.
+
+---
+
 ## Quick Start
 
 ### 1. Create New Repository
