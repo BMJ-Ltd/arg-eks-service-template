@@ -34,5 +34,10 @@ replicas:
   - name: {{SERVICE_NAME}}
     count: 3
 
-commonLabels:
-  environment: live
+images:
+  - name: 385562404581.dkr.ecr.eu-west-1.amazonaws.com/{{SERVICE_NAME}}
+    newTag: v-1.0.0  # REPLACE with actual image tag
+
+labels:
+  - pairs:
+      environment: live

@@ -33,5 +33,10 @@ replicas:
   - name: {{SERVICE_NAME}}
     count: 2
 
-commonLabels:
-  environment: stg
+images:
+  - name: 385562404581.dkr.ecr.eu-west-1.amazonaws.com/{{SERVICE_NAME}}
+    newTag: stg-latest  # REPLACE with actual image tag
+
+labels:
+  - pairs:
+      environment: stg

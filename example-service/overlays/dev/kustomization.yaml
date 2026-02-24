@@ -33,5 +33,10 @@ replicas:
   - name: {{SERVICE_NAME}}
     count: 1
 
-commonLabels:
-  environment: dev
+images:
+  - name: 385562404581.dkr.ecr.eu-west-1.amazonaws.com/{{SERVICE_NAME}}
+    newTag: latest  # REPLACE with actual image tag
+
+labels:
+  - pairs:
+      environment: dev
