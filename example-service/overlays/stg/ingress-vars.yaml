@@ -9,3 +9,7 @@
 - op: add
   path: /metadata/annotations/alb.ingress.kubernetes.io~1inbound-cidrs
   value: 172.26.0.0/16  # Replace with actual VPC CIDR or allowed ranges
+
+- op: add
+  path: /spec/rules/0/host
+  value: {{SERVICE_NAME}}.{{PRODUCT}}.stg.eks.bmjgroup.com  # Replace {{PRODUCT}} with your product namespace

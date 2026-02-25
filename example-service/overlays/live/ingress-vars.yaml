@@ -8,4 +8,8 @@
 
 - op: add
   path: /metadata/annotations/alb.ingress.kubernetes.io~1inbound-cidrs
-  value: 172.26.0.0/16  # Replace with actual VPC CIDR or allowed ranges
+  value: 172.27.0.0/16  # Replace with actual VPC CIDR or allowed ranges (live uses different CIDR)
+
+- op: add
+  path: /spec/rules/0/host
+  value: {{SERVICE_NAME}}.{{PRODUCT}}.live.eks.bmjgroup.com  # Replace {{PRODUCT}} with your product namespace

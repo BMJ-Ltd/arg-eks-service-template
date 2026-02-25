@@ -3,8 +3,9 @@ kind: Ingress
 metadata:
   name: {{SERVICE_NAME}}
 spec:
+  ingressClassName: alb
   rules:
-    - host: {{SERVICE_NAME}}.stg.eks.bmjgroup.com
+    - host:
       http:
         paths:
           - path: /
