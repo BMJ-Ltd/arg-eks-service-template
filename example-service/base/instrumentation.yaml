@@ -4,10 +4,17 @@ metadata:
   name: {{SERVICE_NAME}}-instrumentation
 spec:
   exporter:
-    endpoint: http://opentelemetry-collector.observability.svc.cluster.local:4317
+    endpoint: http://collector-xray-collector.opentelemetry:4317
   propagators:
     - tracecontext
     - baggage
   sampler:
     type: parentbased_traceidratio
     argument: "1.0"
+  # Language-specific auto-instrumentation (uncomment based on your runtime):
+  # java:
+  #   image: public.ecr.aws/aws-observability/adot-autoinstrumentation-java:v1.32.2
+  # nodejs:
+  #   image: public.ecr.aws/aws-observability/adot-autoinstrumentation-node:v0.4.0
+  # python:
+  #   image: public.ecr.aws/aws-observability/adot-autoinstrumentation-python:v0.4.0

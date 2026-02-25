@@ -1,0 +1,7 @@
+- op: add
+  path: /metadata/annotations/external-dns.alpha.kubernetes.io~1hostname
+  value: {{SERVICE_NAME}}.{{ENVIRONMENT}}.eks.bmjgroup.com
+
+# Use this patch when you need external-dns to automatically create Route53 records
+# Uncomment the patch in kustomization.yaml to enable
+# https://jsonpatch.com/

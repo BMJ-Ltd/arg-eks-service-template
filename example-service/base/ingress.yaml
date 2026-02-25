@@ -5,7 +5,9 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/scheme: internal
     alb.ingress.kubernetes.io/load-balancer-name: k8s-{{SERVICE_NAME}}
+    # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:REGION:ACCOUNT:certificate/CERT_ID  # Set in ingress-vars.yaml
     alb.ingress.kubernetes.io/target-type: ip
+    # alb.ingress.kubernetes.io/inbound-cidrs: 10.0.0.0/8  # Set in ingress-vars.yaml to restrict access
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
     alb.ingress.kubernetes.io/ssl-redirect: '443'
     alb.ingress.kubernetes.io/healthcheck-port: "traffic-port"

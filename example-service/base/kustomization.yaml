@@ -18,5 +18,5 @@ resources:
   - ingress.yaml
   # Optional resources (uncomment as needed):
   # - pvc.yaml
-  # - instrumentation.yaml
+  # - instrumentation.yaml  # Enable for OpenTelemetry tracing (also uncomment annotation in deployment.yaml)
   # - argocd.yaml

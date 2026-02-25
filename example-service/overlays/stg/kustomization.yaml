@@ -13,6 +13,12 @@ patches:
     kind: ServiceAccount
     name: {{SERVICE_NAME}}
     version: v1
+# Optional: Uncomment to add external-dns annotation to Service
+# - path: service-patch.yaml
+#   target:
+#     kind: Service
+#     name: {{SERVICE_NAME}}
+#     version: v1
 - path: ingress-patch.yaml
   target:
     group: networking.k8s.io

@@ -12,6 +12,10 @@ spec:
       labels:
         app.kubernetes.io/name: {{SERVICE_NAME}}
       annotations:
+        # Uncomment for OpenTelemetry auto-instrumentation (requires instrumentation.yaml):
+        # instrumentation.opentelemetry.io/inject-java: "true"      # For Java apps
+        # instrumentation.opentelemetry.io/inject-nodejs: "true"    # For Node.js apps
+        # instrumentation.opentelemetry.io/inject-python: "true"    # For Python apps
         # Uncomment for Prometheus scraping:
         # prometheus.io/scrape: "true"
         # prometheus.io/port: "{{SERVICE_PORT}}"

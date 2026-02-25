@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{SERVICE_NAME}}
+  annotations:
+    # external-dns.alpha.kubernetes.io/hostname: {{SERVICE_NAME}}.ENV.eks.bmjgroup.com  # Set in service-patch.yaml
 spec:
   type: ClusterIP
   ports:
